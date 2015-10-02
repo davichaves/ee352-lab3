@@ -89,18 +89,16 @@ exit:
 
 
 pushStack:
-	#########################
-	# WRITE YOUR CODE HERE!	#
-	#########################
-	la $s2, theStack 	# Load the address of the stack into $s3.
-	la $s3, stackPointer	# Load the address of the stack pointer.
-	la $s5, theArray	# move address of theArray into $s5
-loop:	move $s5, $s2		# copies the value from the array to the stack
-	addi $s5, $s5, 4	# goes to the next value of the array
-	addi $s2, $s2, 4	# goes to the next value of the stack
-	sw $s2,($s3)		# Initialize the stack pointer with the stack address.
-	lw $s6, ($s5)		# loads $s6 with the value from $s5
-	bgt $s6, $zero, loop	# loops if its not -1 	
+	la $s2, theArray	# Loads the address of the array into $s2.
+	la $s3, theStack	# Loads the address of the stack.
+	la $s5, stackPointer	# Loads the address of the stack pointer.
+ploop:	lw $s4, ($s2)		# Loads the current value of the array
+	sw $s4, ($s3)		# Store the next value in the stack
+	sw $s3, ($s5)		# Updates the stack pointer
+	addi $s2, $s2, 4	# Updates the value to be pointed at the array
+	addi $s3, $s3, 4	# Updates the place that the next number will be added in the stack
+	lw $s4, ($s2)		# loads the current value of the array to $s4.
+	bgez $s4, ploop		# loops while it doesn't reach -1
 	jr $ra			# Return
 
 printStack:
