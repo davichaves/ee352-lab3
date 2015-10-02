@@ -62,28 +62,29 @@ Cont1:	lw $t1, ($t0)	 # Load the value at $t0 into $t1.
 ExitPrintArray:	jr $ra		#return
 
 BubbleSort:
-	la 		$t0, theArray	# move address of theArray into $t0
-	li      $s0, 1			# boolean swap = true.  0 --> false, 1 --> true
-	li      $t2, 0			# i = 0;
-loop:
-	li      $s0, 0			# swap = false;
-	move    $t2, $0			# i = 0;
-	subu    $s2, $s1, $t1	# s2 = length - j
+	la 		$t0, theArray		# move address of theArray into $t0
+	li      $s0, 1				# boolean swap = true.  0 --> false, 1 --> true
+	li      $t2, 0				# i = 0;
+whileLoop:
+	li      $s0, 0				# swap = false;
+	la 		$t0, theArray		#move the address of theArray into $t0
+	move    $t2, $0				# i = 0;
 forLoop:
-	bge     $t2, $s2, exitForLoop	# if i>=s2, exit
-	lw      $a0, 0($t0)		# a0 = array[i]
-	lw      $a1, 4($t0)		# a1 = array[i+1]
-	ble     $a0, $a1, update        # if array[i]<=array[i+1] skip
-	sw      $a1, 0($t0)		# a[i+1] = a[i]
-	sw      $a0, 4($t0)		# a[i] = a[i+1]
-	li      $s0, 1			# swap = true;
-update:
-	addiu   $t2, $t2, 1		# i++
-	sll     $t3, $t2, 2		# t3 = i*4
-	addu    $t0, $t0, $t3	# point to next element -->
+	lw      $a0, 0($t0)			# a0 = array[i]
+	lw      $a1, 4($t0)			# a1 = array[i+1]
+	ble     $a1, $zero, exit	# if a1<zero (reached end of array) exits for loop
+	ble     $a0, $a1, next		# if array[i]<=array[i+1] skip
+	sw      $a1, 0($t0)			# a[i+1] = a[i]
+	sw      $a0, 4($t0)			# a[i] = a[i+1]
+	li      $s0, 1				# swap = true;
+next:
+	addiu   $t2, $t2, 1			# i++
+	sll     $t3, $t2, 2			# t3 = i*4
+	la 		$t0, theArray		#move the address of theArray into $t0
+	addu    $t0, $t0, $t3		# point to next element
 	j       forLoop
-exitForLoop:
-	bnez    $s0, loop		# exit if swap = true
+exit:
+	bnez    $s0, whileLoop		#loop if swap = true
 	jr      $ra
 
 
