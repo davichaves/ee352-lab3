@@ -62,25 +62,25 @@ Cont1:	lw $t1, ($t0)	 # Load the value at $t0 into $t1.
 ExitPrintArray:	jr $ra		#return
 
 BubbleSort:
-	la 		$t0, theArray		# move address of theArray into $t0
-	li      $s0, 1				# boolean swap = true.  0 --> false, 1 --> true
-	li      $t2, 0				# i = 0;
+	la 	$t0, theArray		# move address of theArray into $t0
+	li      $s0, 1			# boolean swap = true.  0 --> false, 1 --> true
+	li      $t2, 0			# i = 0;
 whileLoop:
-	li      $s0, 0				# swap = false;
-	la 		$t0, theArray		#move the address of theArray into $t0
-	move    $t2, $0				# i = 0;
+	li      $s0, 0			# swap = false;
+	la 	$t0, theArray		#move the address of theArray into $t0
+	move    $t2, $0			# i = 0;
 forLoop:
-	lw      $a0, 0($t0)			# a0 = array[i]
-	lw      $a1, 4($t0)			# a1 = array[i+1]
+	lw      $a0, 0($t0)		# a0 = array[i]
+	lw      $a1, 4($t0)		# a1 = array[i+1]
 	ble     $a1, $zero, exit	# if a1<zero (reached end of array) exits for loop
 	ble     $a0, $a1, next		# if array[i]<=array[i+1] skip
-	sw      $a1, 0($t0)			# a[i+1] = a[i]
-	sw      $a0, 4($t0)			# a[i] = a[i+1]
-	li      $s0, 1				# swap = true;
+	sw      $a1, 0($t0)		# a[i+1] = a[i]
+	sw      $a0, 4($t0)		# a[i] = a[i+1]
+	li      $s0, 1			# swap = true;
 next:
-	addiu   $t2, $t2, 1			# i++
-	sll     $t3, $t2, 2			# t3 = i*4
-	la 		$t0, theArray		#move the address of theArray into $t0
+	addiu   $t2, $t2, 1		# i++
+	sll     $t3, $t2, 2		# t3 = i*4
+	la 	$t0, theArray		# move the address of theArray into $t0
 	addu    $t0, $t0, $t3		# point to next element
 	j       forLoop
 exit:
@@ -92,7 +92,16 @@ pushStack:
 	#########################
 	# WRITE YOUR CODE HERE!	#
 	#########################
-	jr $ra		# Return
+	la $s2, theStack 	# Load the address of the stack into $s3.
+	la $s3, stackPointer	# Load the address of the stack pointer.
+	la $s5, theArray	# move address of theArray into $s5
+loop:	move $s5, $s2		# copies the value from the array to the stack
+	addi $s5, $s5, 4	# goes to the next value of the array
+	addi $s2, $s2, 4	# goes to the next value of the stack
+	sw $s2,($s3)		# Initialize the stack pointer with the stack address.
+	lw $s6, ($s5)		# loads $s6 with the value from $s5
+	bgt $s6, $zero, loop	# loops if its not -1 	
+	jr $ra			# Return
 
 printStack:
 	la $t0, theStack     # Load the address of stack.
